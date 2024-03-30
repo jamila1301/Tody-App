@@ -8,10 +8,10 @@ import 'package:tody_app/features/category/presentation/bloc/category_list/categ
 class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
-    required this.child,
+    this.child,
   });
 
-  final Widget child;
+  final Widget? child;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -31,10 +31,11 @@ class _HomePageState extends State<HomePage> {
             return Row(
               children: [
                 const Expanded(child: HomeView()),
-                Expanded(
-                  flex: 4,
-                  child: widget.child,
-                ),
+                if (widget.child != null)
+                  Expanded(
+                    flex: 4,
+                    child: widget.child!,
+                  ),
               ],
             );
           } else {

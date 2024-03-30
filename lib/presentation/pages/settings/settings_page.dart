@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tody_app/bloc/settings/localization/localization_notifier.dart';
@@ -16,10 +17,12 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        leading: GestureDetector(
-          onTap: Navigator.of(context).pop,
-          child: const Icon(Icons.close),
-        ),
+        leading: kIsWeb
+            ? null
+            : GestureDetector(
+                onTap: Navigator.of(context).pop,
+                child: const Icon(Icons.close),
+              ),
         title: Text(
           context.l10n.settings,
           style: context.typography.titleLarge,

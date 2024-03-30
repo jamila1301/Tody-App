@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -42,10 +43,17 @@ class _HomeViewState extends State<HomeView> {
                         ),
                         leading: GestureDetector(
                           onTap: () {
-                            Navigator.of(context).pushNamed(
-                              Routes.settings.path,
-                              arguments: context.read<UserNotifier>(),
-                            );
+                            if (kIsWeb) {
+                              context.go(
+                                Routes.settings.path,
+                                extra: context.read<UserNotifier>(),
+                              );
+                            } else {
+                              context.push(
+                                Routes.settings.path,
+                                extra: context.read<UserNotifier>(),
+                              );
+                            }
                           },
                           child: CircleAvatar(
                             backgroundColor: context.colors.primary,
@@ -72,7 +80,11 @@ class _HomeViewState extends State<HomeView> {
                       ),
                       title: AppLocalizations.of(context).important,
                       onTap: () {
-                        context.go(Routes.importantTasks.path);
+                        if (kIsWeb) {
+                          context.go(Routes.importantTasks.path);
+                        } else {
+                          context.push(Routes.importantTasks.path);
+                        }
                       },
                     ),
                     StaticCategoryItem(

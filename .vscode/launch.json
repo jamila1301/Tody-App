@@ -9,7 +9,7 @@
                 "--web-browser-flag",
                 "--disable-web-security",
             ],
-            "deviceId": "chrome"
+            "deviceId": "chrome",
         }
     ]
 }

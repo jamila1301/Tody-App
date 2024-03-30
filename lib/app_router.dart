@@ -1,5 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +15,7 @@ import 'package:tody_app/features/category/presentation/views/task_list_page.dar
 import 'package:tody_app/presentation/pages/home/home_page.dart';
 import 'package:tody_app/presentation/pages/login/login_page.dart';
 import 'package:tody_app/presentation/pages/onboarding/onboarding_page.dart';
+import 'package:tody_app/presentation/pages/settings/settings_page.dart';
 import 'package:tody_app/presentation/pages/splash/splash_page.dart';
 
 final _appRouterKey = GlobalKey<NavigatorState>();
@@ -29,6 +31,7 @@ final class AppRouter {
     required AuthNotifier authNotifier,
   }) {
     _appRouter = GoRouter(
+      initialLocation: Routes.splash.path,
       navigatorKey: _appRouterKey,
       refreshListenable: authNotifier,
       redirect: (context, state) {
@@ -46,6 +49,13 @@ final class AppRouter {
           }
 
           return Routes.login.path;
+        } else if (authState == AuthState.authenticated) {
+          final isOnLoginPage = state.matchedLocation == Routes.login.path;
+          final isOnSplashPage = state.matchedLocation == Routes.splash.path;
+
+          if (isOnLoginPage || isOnSplashPage) {
+            return Routes.home.path;
+          }
         }
 
         return state.matchedLocation;
@@ -64,6 +74,24 @@ final class AppRouter {
           },
         ),
         GoRoute(
+          path: Routes.settings.path,
+          builder: (context, state) {
+            final userNotifier = state.extra as UserNotifier?;
+
+            if (userNotifier != null) {
+              return ChangeNotifierProvider.value(
+                value: state.extra as UserNotifier,
+                child: const SettingsPage(),
+              );
+            }
+
+            return ChangeNotifierProvider(
+              create: (_) => UserNotifier()..fetchUser(),
+              child: const SettingsPage(),
+            );
+          },
+        ),
+        GoRoute(
           path: Routes.login.path,
           builder: (context, state) {
             return ChangeNotifierProvider(
@@ -72,101 +100,109 @@ final class AppRouter {
             );
           },
         ),
-        ShellRoute(
-          navigatorKey: _shellRouteKey,
-          builder: (context, shell, child) {
-            return ChangeNotifierProvider(
-              lazy: true,
-              create: (context) => UserNotifier()..fetchUser(),
-              child: HomePage(child: child),
-            );
-          },
-          routes: [
-            /// 0
-            GoRoute(
-              parentNavigatorKey: _shellRouteKey,
-              path: Routes.home.path,
-              builder: (context, state) {
-                return const Center(
-                  child: SizedBox.shrink(),
-                );
-              },
-            ),
-            GoRoute(
-              parentNavigatorKey: _shellRouteKey,
-              path: Routes.importantTasks.path,
-              pageBuilder: (context, state) {
-                return const NoTransitionPage(
-                  child: Scaffold(
-                    backgroundColor: Colors.black,
-                    body: Center(
-                      child: Text('Important Tasks'),
+        if (kIsWeb)
+          ShellRoute(
+            navigatorKey: _shellRouteKey,
+            builder: (context, shell, child) {
+              return ChangeNotifierProvider(
+                lazy: true,
+                create: (context) => UserNotifier()..fetchUser(),
+                child: HomePage(child: child),
+              );
+            },
+            routes: [
+              /// 0
+              GoRoute(
+                parentNavigatorKey: _shellRouteKey,
+                path: Routes.home.path,
+                builder: (context, state) {
+                  return const Center(
+                    child: SizedBox.shrink(),
+                  );
+                },
+              ),
+              GoRoute(
+                parentNavigatorKey: _shellRouteKey,
+                path: Routes.importantTasks.path,
+                pageBuilder: (context, state) {
+                  return const NoTransitionPage(
+                    child: Scaffold(
+                      backgroundColor: Colors.black,
+                      body: Center(
+                        child: Text('Important Tasks'),
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-            GoRoute(
-              parentNavigatorKey: _shellRouteKey,
-              path: Routes.categoriesById.path,
-              pageBuilder: (context, state) {
-                final id = state.pathParameters['id'];
-                final parsedId = int.parse(id!);
+                  );
+                },
+              ),
+              GoRoute(
+                parentNavigatorKey: _shellRouteKey,
+                path: Routes.categoriesById.path,
+                pageBuilder: (context, state) {
+                  final id = state.pathParameters['id'];
+                  final parsedId = int.parse(id!);
 
-                return NoTransitionPage(
-                  child: MultiBlocProvider(
-                    providers: [
-                      BlocProvider.value(
-                        value: context.read<CategoryListBloc>(),
-                      ),
-                      BlocProvider(
-                        create: (context) =>
-                            GetIt.instance.get<CategoryActionsBloc>(),
-                      ),
-                    ],
-                    child: TaskListPage(categoryId: parsedId),
+                  return NoTransitionPage(
+                    child: MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(
+                          value: context.read<CategoryListBloc>(),
+                        ),
+                        BlocProvider(
+                          create: (context) =>
+                              GetIt.instance.get<CategoryActionsBloc>(),
+                        ),
+                      ],
+                      child: TaskListPage(categoryId: parsedId),
+                    ),
+                  );
+                },
+              ),
+            ],
+          )
+        else ...[
+          GoRoute(
+            path: Routes.home.path,
+            builder: (context, state) {
+              return ChangeNotifierProvider(
+                lazy: true,
+                create: (context) => UserNotifier()..fetchUser(),
+                child: const HomePage(),
+              );
+            },
+          ),
+          GoRoute(
+            path: Routes.importantTasks.path,
+            builder: (context, state) {
+              return const Scaffold(
+                backgroundColor: Colors.black,
+                body: Center(
+                  child: Text('Important Tasks'),
+                ),
+              );
+            },
+          ),
+          GoRoute(
+            path: Routes.categoriesById.path,
+            builder: (context, state) {
+              final id = state.pathParameters['id'];
+              final parsedId = int.parse(id!);
+
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(
+                    value: state.extra as CategoryListBloc,
                   ),
-                );
-              },
-            ),
-          ],
-        ),
-        // ShellRoute(
-        //   builder: (context, state, child) {
-        //     return ChangeNotifierProvider(
-        //       lazy: true,
-        //       create: (context) => UserNotifier()..fetchUser(),
-        //       child: HomePage(child: child),
-        //     );
-        //   },
-        //   routes: [
-        //     GoRoute(
-        //       path: Routes.home.path,
-        //       builder: (context, state) {
-        //         return const Center(
-        //           child: Text('Important'),
-        //         );
-        //       },
-        //     ),
-        //     GoRoute(
-        //       path: '${Routes.taskList.path}/:id',
-        //       builder: (context, state) {
-        //         return MultiBlocProvider(
-        //           providers: [
-        //             BlocProvider.value(
-        //               value: context.read<CategoryListBloc>(),
-        //             ),
-        //             BlocProvider(
-        //               create: (context) => GetIt.instance<CategoryActionsBloc>()
-        //                 ..add(const CategoryDetailsRequested(67)),
-        //             ),
-        //           ],
-        //           child: const TaskListPage(),
-        //         );
-        //       },
-        //     ),
-        //   ],
-        // ),
+                  BlocProvider(
+                    create: (context) =>
+                        GetIt.instance.get<CategoryActionsBloc>(),
+                  ),
+                ],
+                child: TaskListPage(categoryId: parsedId),
+              );
+            },
+          ),
+        ],
       ],
     );
   }

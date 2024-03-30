@@ -24,7 +24,10 @@ class UserCategoryList extends StatelessWidget {
                   return DynamicCategoryItem(
                     title: categories[index].title,
                     onTap: () {
-                      context.go('/categories/${categories[index].id}');
+                      context.push(
+                        '/categories/${categories[index].id}',
+                        extra: context.read<CategoryListBloc>(),
+                      );
                       // Navigator.of(context).pushNamed(
                       //   Routes.taskList.path,
                       //   arguments: {

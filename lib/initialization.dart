@@ -2,6 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tody_app/app_router.dart';
 import 'package:tody_app/bloc/auth/auth_notifier.dart';
 import 'package:tody_app/bloc/login/login_notifier.dart';
 import 'package:tody_app/bloc/settings/localization/localization_notifier.dart';
@@ -87,9 +88,12 @@ Future<void> init() async {
 
   /// bloc, state management, notifier, viewmodel
   getIt.registerFactory(() => LoginNotifier(getIt()));
-  getIt.registerFactory(() => AuthNotifier(getIt()));
+  getIt.registerSingleton(AuthNotifier(getIt())..checkAuth());
   getIt.registerFactory(() => LocalizationNotifier(getIt()));
   getIt.registerFactory(() => CategoryListBloc(categoryRepository: getIt()));
   getIt.registerFactory(() => CategoryCreationBloc(getIt()));
   getIt.registerFactory(() => CategoryActionsBloc(categoryRepository: getIt()));
+
+  /// router logic of app
+  getIt.registerSingleton(AppRouter(authNotifier: getIt()));
 }

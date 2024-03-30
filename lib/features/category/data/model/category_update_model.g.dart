@@ -8,7 +8,7 @@ part of 'category_update_model.dart';
 
 CategoryUpdateModel _$CategoryUpdateModelFromJson(Map<String, dynamic> json) =>
     CategoryUpdateModel(
-      categoryId: json['categoryId'] as int,
+      categoryId: json['category_id'] as int,
       title: json['title'] as String,
     );
 

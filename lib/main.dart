@@ -44,7 +44,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => GetIt.instance<AuthNotifier>()..checkAuth(),
+          create: (context) => GetIt.instance<AuthNotifier>(),
         ),
         ChangeNotifierProvider(
           create: (context) => GetIt.instance<LocalizationNotifier>(),
@@ -77,9 +77,7 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp.router(
       title: 'Tody App',
-      routerConfig: AppRouter(
-        authNotifier: context.read<AuthNotifier>(),
-      ).instance,
+      routerConfig: GetIt.instance.get<AppRouter>().instance,
       debugShowCheckedModeBanner: false,
       locale: context.watch<LocalizationNotifier>().locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
