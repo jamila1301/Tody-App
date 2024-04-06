@@ -24,6 +24,7 @@ abstract class RestClient {
   Future<ApiResponse> get(
     String url, {
     Map<String, String>? headers,
+    Map<String, dynamic>? queryParameters,
   });
 
   Future<ApiResponse> post(
@@ -44,9 +45,18 @@ abstract class RestClient {
     Object? body,
   });
 
-  Uri buildUri(String path) {
+  Uri buildUri(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) {
     if (baseUrl != null) {
-      return Uri.http(baseUrl!, path);
+      final stringifiedQueries = queryParameters?.map(
+        (key, value) {
+          return MapEntry(key, value.toString());
+        },
+      );
+
+      return Uri.http(baseUrl!, path, stringifiedQueries);
     }
 
     return Uri.parse(path);

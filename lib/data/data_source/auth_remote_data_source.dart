@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:tody_app/core/rest/rest_client.dart';
 import 'package:tody_app/data/model/auth_request_model.dart';
 

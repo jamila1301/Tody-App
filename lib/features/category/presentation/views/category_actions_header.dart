@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tody_app/core/theme/theme_ext.dart';
 import 'package:tody_app/features/category/presentation/bloc/category_actions/category_actions_bloc.dart';
-import 'package:tody_app/features/category/presentation/bloc/category_list/category_list_bloc.dart';
 import 'package:tody_app/features/category/presentation/views/category_remove_dialog.dart';
 import 'package:tody_app/features/category/presentation/views/category_renaming_dialog.dart';
 
-class TaskListPage extends StatefulWidget {
-  const TaskListPage({
+class CategoryActionsHeader extends StatefulWidget {
+  const CategoryActionsHeader({
     super.key,
     required this.categoryId,
   });
@@ -15,20 +14,12 @@ class TaskListPage extends StatefulWidget {
   final int categoryId;
 
   @override
-  State<TaskListPage> createState() => _TaskListPageState();
+  State<CategoryActionsHeader> createState() => _CategoryActionsHeaderState();
 }
 
-class _TaskListPageState extends State<TaskListPage> {
+class _CategoryActionsHeaderState extends State<CategoryActionsHeader> {
   @override
-  void initState() {
-    super.initState();
-    context
-        .read<CategoryActionsBloc>()
-        .add(CategoryDetailsRequested(widget.categoryId));
-  }
-
-  @override
-  void didUpdateWidget(covariant TaskListPage oldWidget) {
+  void didUpdateWidget(covariant CategoryActionsHeader oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.categoryId != widget.categoryId) {
@@ -54,34 +45,34 @@ class _TaskListPageState extends State<TaskListPage> {
           _ => 'Failure!',
         };
 
-        return Scaffold(
+        return AppBar(
+          centerTitle: false,
+          foregroundColor: context.colors.onPrimary,
           backgroundColor: context.colors.primaryVariantLight,
-          appBar: AppBar(
-            centerTitle: false,
-            backgroundColor: context.colors.primaryVariantLight,
-            title: Text(
-              title,
-              style: context.typography.titleLarge.copyWith(
-                color: context.colors.onPrimary,
-              ),
+          title: Text(
+            title,
+            style: context.typography.titleLarge.copyWith(
+              color: context.colors.onPrimary,
             ),
-            actions: [
-              if (state is CategoryActionSuccess)
-                IconButton(
-                  onPressed: () {
-                    CategoryRenamingDialog.show(context);
-                  },
-                  icon: const Icon(Icons.drive_file_rename_outline),
-                ),
-              if (state is CategoryActionSuccess)
-                IconButton(
-                  onPressed: () {
-                    CategoryRemoveDialog.show(context);
-                  },
-                  icon: const Icon(Icons.delete_outline),
-                ),
-            ],
           ),
+          actions: [
+            if (state is CategoryActionSuccess)
+              IconButton(
+                color: context.colors.onPrimary,
+                onPressed: () {
+                  CategoryRenamingDialog.show(context);
+                },
+                icon: const Icon(Icons.drive_file_rename_outline),
+              ),
+            if (state is CategoryActionSuccess)
+              IconButton(
+                color: context.colors.onPrimary,
+                onPressed: () {
+                  CategoryRemoveDialog.show(context);
+                },
+                icon: const Icon(Icons.delete_outline),
+              ),
+          ],
         );
       },
     );

@@ -32,11 +32,13 @@ final class HttpRestClient extends RestClient {
   Future<ApiResponse> get(
     String url, {
     Map<String, String>? headers,
+    Map<String, dynamic>? queryParameters,
   }) =>
       _handleRequest(
         url,
         requestType: _HttpRequestType.get,
         headers: headers,
+        queryParameters: queryParameters,
       );
 
   @override
@@ -68,6 +70,7 @@ final class HttpRestClient extends RestClient {
     String url, {
     required _HttpRequestType requestType,
     required Map<String, String>? headers,
+    Map<String, dynamic>? queryParameters,
     Object? body,
   }) async {
     try {
@@ -78,7 +81,7 @@ final class HttpRestClient extends RestClient {
       switch (requestType) {
         case _HttpRequestType.get:
           response = await client.get(
-            buildUri(url),
+            buildUri(url, queryParameters: queryParameters),
             headers: {
               if (generalHeaders != null) ...generalHeaders,
               if (headers != null) ...headers,
@@ -87,7 +90,7 @@ final class HttpRestClient extends RestClient {
 
         case _HttpRequestType.post:
           response = await client.post(
-            buildUri(url),
+            buildUri(url, queryParameters: queryParameters),
             headers: {
               if (generalHeaders != null) ...generalHeaders,
               if (headers != null) ...headers,
@@ -96,7 +99,7 @@ final class HttpRestClient extends RestClient {
           );
         case _HttpRequestType.delete:
           response = await client.delete(
-            buildUri(url),
+            buildUri(url, queryParameters: queryParameters),
             headers: {
               if (generalHeaders != null) ...generalHeaders,
               if (headers != null) ...headers,
@@ -105,7 +108,7 @@ final class HttpRestClient extends RestClient {
           );
         case _HttpRequestType.patch:
           response = await client.patch(
-            buildUri(url),
+            buildUri(url, queryParameters: queryParameters),
             headers: {
               if (generalHeaders != null) ...generalHeaders,
               if (headers != null) ...headers,
@@ -114,7 +117,7 @@ final class HttpRestClient extends RestClient {
           );
         case _HttpRequestType.put:
           response = await client.put(
-            buildUri(url),
+            buildUri(url, queryParameters: queryParameters),
             headers: {
               if (generalHeaders != null) ...generalHeaders,
               if (headers != null) ...headers,
@@ -141,7 +144,7 @@ final class HttpRestClient extends RestClient {
 
       final decodedBody = decodeBody(response.body) as Map<String, dynamic>;
       return ApiResponse(
-        statusCode: decodedBody['statusCode'],
+        statusCode: decodedBody['status_code'],
         data: decodedBody['data'],
       );
     } else if (response.statusCode >= 400 && response.statusCode <= 500) {

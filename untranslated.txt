@@ -1,1 +1,10 @@
-{}
+{
+  "az": [
+    "dateFormat"
+  ],
+
+  "tr": [
+    "dateFormat",
+    "formattedDate"
+  ]
+}

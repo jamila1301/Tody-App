@@ -28,7 +28,7 @@ class User extends Equatable {
     return User(
       id: json['id'] as int,
       username: json['username'] as String,
-      fullName: json['fullName'] as String,
+      fullName: json['full_name'] as String,
     );
   }
 

@@ -19,6 +19,10 @@ import 'package:tody_app/features/category/domain/repository/category_repository
 import 'package:tody_app/features/category/presentation/bloc/category_actions/category_actions_bloc.dart';
 import 'package:tody_app/features/category/presentation/bloc/category_creation/list_creation_bloc.dart';
 import 'package:tody_app/features/category/presentation/bloc/category_list/category_list_bloc.dart';
+import 'package:tody_app/features/todo/data/data_source/todo_remote_data_source.dart';
+import 'package:tody_app/features/todo/data/repository/todo_repository_impl.dart';
+import 'package:tody_app/features/todo/domain/repository/todo_repository.dart';
+import 'package:tody_app/features/todo/presentation/bloc/todo_list_bloc.dart';
 
 final getIt = GetIt.instance;
 
@@ -72,6 +76,10 @@ Future<void> init() async {
     CategoryRemoteDataSoureImpl(client: getIt()),
   );
 
+  getIt.registerSingleton<TodoRemoteDataSource>(
+    TodoRemoteDataSourceImpl(getIt()),
+  );
+
   /// repositories
   getIt.registerSingleton<AuthRepository>(
     AuthRepositoryImpl(
@@ -86,6 +94,10 @@ Future<void> init() async {
     ),
   );
 
+  getIt.registerSingleton<TodoRepository>(
+    TodoRepositoryImpl(getIt()),
+  );
+
   /// bloc, state management, notifier, viewmodel
   getIt.registerFactory(() => LoginNotifier(getIt()));
   getIt.registerSingleton(AuthNotifier(getIt())..checkAuth());
@@ -93,6 +105,7 @@ Future<void> init() async {
   getIt.registerFactory(() => CategoryListBloc(categoryRepository: getIt()));
   getIt.registerFactory(() => CategoryCreationBloc(getIt()));
   getIt.registerFactory(() => CategoryActionsBloc(categoryRepository: getIt()));
+  getIt.registerFactory(() => TodoListBloc(getIt()));
 
   /// router logic of app
   getIt.registerSingleton(AppRouter(authNotifier: getIt()));

@@ -16,5 +16,16 @@
   "username": "İstifadəçi adı",
   "usernameRequired": "İstifadəçi adı tələb olunur",
   "password": "parol",
-  "passwordRequired": "Parol tələb olunur və ən azı 6 simvol olmalıdır"
+  "passwordRequired": "Parol tələb olunur və ən azı 6 simvol olmalıdır",
+  "formattedDate": "{date}",
+  "@formattedDate": {
+    "description": "Formatted date",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "EE, dd MM",
+        "isCustomDateFormat": "true"
+        }
+      }
+    }
 }

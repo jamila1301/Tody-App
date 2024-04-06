@@ -4,19 +4,8 @@ import 'package:tody_app/core/exception/empty_data_exception.dart';
 import 'package:tody_app/core/rest/rest_client.dart';
 import 'package:tody_app/data/model/error_response.dart';
 import 'package:tody_app/features/todo/data/data_source/todo_remote_data_source.dart';
-import 'package:tody_app/features/todo/data/model/todo_model.dart';
-
-import '../../../json/json_reader.dart';
-
-final _list = [
-  TodoModel(
-    id: 1,
-    title: 'Test Title',
-    isCompleted: false,
-    isImportant: false,
-    createdAt: DateTime.parse('2024-03-12T19:04:37.757207Z'),
-  ),
-];
+import '../../../../json/json_reader.dart';
+import '../../../mock_list.dart';
 
 class MockClient extends Mock implements RestClient {}
 
@@ -44,7 +33,7 @@ void main() {
 
           final todoList = await dataSource!.getTodoList(1);
 
-          expect(todoList, _list);
+          expect(todoList, mockTodoModelList);
           verify(() => client!.get(any())).called(1);
           verifyNoMoreInteractions(client);
         },
@@ -54,7 +43,10 @@ void main() {
         'should throw EmptyDataException when there is no data in list of todo',
         () async {
           when(() => client!.get(any())).thenAnswer(
-            (_) async => const ApiResponse(statusCode: 200, data: []),
+            (_) async => const ApiResponse(
+              statusCode: 200,
+              data: [],
+            ),
           );
 
           expect(

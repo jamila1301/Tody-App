@@ -1,5 +1,6 @@
 {
   "@@locale": "en",
+  "dateFormat": "dd MMMM yyyy",
   "important": "Important",
   "tasks": "Tasks",
   "light": "Light",
@@ -16,5 +17,16 @@
   "username": "Username",
   "usernameRequired": "Username is required",
   "password": "Password",
-  "passwordRequired": "Password is required and must be at least 6 characters"
-}
+  "passwordRequired": "Password is required and must be at least 6 characters",
+  "formattedDate": "{date}",
+  "@formattedDate": {
+    "description": "Formatted date",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "EE, dd MM",
+        "isCustomDateFormat": "true"
+        }
+      }
+    }
+  }
