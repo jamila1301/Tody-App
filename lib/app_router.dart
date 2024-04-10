@@ -10,6 +10,7 @@ import 'package:tody_app/bloc/user/user_notifier.dart';
 import 'package:tody_app/core/constants/routes.dart';
 import 'package:tody_app/features/category/presentation/bloc/category_actions/category_actions_bloc.dart';
 import 'package:tody_app/features/category/presentation/bloc/category_list/category_list_bloc.dart';
+import 'package:tody_app/features/todo/presentation/bloc/todo_actions_bloc.dart';
 import 'package:tody_app/features/todo/presentation/bloc/todo_list_bloc.dart';
 import 'package:tody_app/pages/task_list_page.dart';
 import 'package:tody_app/presentation/pages/home/home_page.dart';
@@ -204,6 +205,9 @@ final class AppRouter {
                   BlocProvider(
                     create: (context) => GetIt.instance.get<TodoListBloc>()
                       ..add(TodoListRequested(parsedId)),
+                  ),
+                  BlocProvider(
+                    create: (context) => GetIt.instance.get<TodoActionsBloc>(),
                   ),
                 ],
                 child: TaskListPage(categoryId: parsedId),

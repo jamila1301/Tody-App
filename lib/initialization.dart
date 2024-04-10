@@ -22,6 +22,7 @@ import 'package:tody_app/features/category/presentation/bloc/category_list/categ
 import 'package:tody_app/features/todo/data/data_source/todo_remote_data_source.dart';
 import 'package:tody_app/features/todo/data/repository/todo_repository_impl.dart';
 import 'package:tody_app/features/todo/domain/repository/todo_repository.dart';
+import 'package:tody_app/features/todo/presentation/bloc/todo_actions_bloc.dart';
 import 'package:tody_app/features/todo/presentation/bloc/todo_list_bloc.dart';
 
 final getIt = GetIt.instance;
@@ -106,6 +107,7 @@ Future<void> init() async {
   getIt.registerFactory(() => CategoryCreationBloc(getIt()));
   getIt.registerFactory(() => CategoryActionsBloc(categoryRepository: getIt()));
   getIt.registerFactory(() => TodoListBloc(getIt()));
+  getIt.registerFactory(() => TodoActionsBloc(getIt()));
 
   /// router logic of app
   getIt.registerSingleton(AppRouter(authNotifier: getIt()));

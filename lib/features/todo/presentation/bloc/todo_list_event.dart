@@ -15,3 +15,7 @@ class TodoListRequested extends TodoListEvent {
   @override
   List<Object?> get props => [categoryId];
 }
+
+class RefreshListRequested extends TodoListEvent {
+  const RefreshListRequested();
+}
